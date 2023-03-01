@@ -1,4 +1,5 @@
 import "./App.css";
+import WeatherTable from "./components/weatherTable";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
           Rekrut
         </h1>
       </header>
+      <WeatherTable />
     </div>
   );
 }
