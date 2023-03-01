@@ -17,3 +17,4 @@ Server/bin/Debug/net6.0/Rekrut.runtimeconfig.json
 Server/bin/Debug/net6.0/Swashbuckle.AspNetCore.Swagger.dll
 Server/bin/Debug/net6.0/Swashbuckle.AspNetCore.SwaggerGen.dll
 Server/bin/Debug/net6.0/Swashbuckle.AspNetCore.SwaggerUI.dll
+Server/Properties/launchSettings.json
