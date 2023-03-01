@@ -5,3 +5,15 @@
 /.vs
 /Server/.vs
 /Server/obj
+Client/src/App.js
+Server/bin/Debug/net6.0/appsettings.Development.json
+Server/bin/Debug/net6.0/appsettings.json
+Server/bin/Debug/net6.0/Microsoft.OpenApi.dll
+Server/bin/Debug/net6.0/Rekrut.deps.json
+Server/bin/Debug/net6.0/Rekrut.dll
+Server/bin/Debug/net6.0/Rekrut.exe
+Server/bin/Debug/net6.0/Rekrut.pdb
+Server/bin/Debug/net6.0/Rekrut.runtimeconfig.json
+Server/bin/Debug/net6.0/Swashbuckle.AspNetCore.Swagger.dll
+Server/bin/Debug/net6.0/Swashbuckle.AspNetCore.SwaggerGen.dll
+Server/bin/Debug/net6.0/Swashbuckle.AspNetCore.SwaggerUI.dll
