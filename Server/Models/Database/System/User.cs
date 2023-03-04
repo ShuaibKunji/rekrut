@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Rekrut.Models.Database.System;
+﻿namespace Rekrut.Models.Database.System;
 
 public partial class User
 {
