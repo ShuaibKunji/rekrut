@@ -57,6 +57,9 @@ namespace Rekrut.Implementation
                     {
                         result.AccessToken = GenerateToken(user, true);
                         result.RefreshToken = GenerateToken(user, false);
+                        result.Features = await _dbcontext.ProfileFeatureMaps
+                            .Where(p => p.ProfileId == user.ProfileId)
+                            .Select(p => p.Feature.Name).ToListAsync();
                     }
                 }
             }
@@ -122,7 +125,8 @@ namespace Rekrut.Implementation
                 var newUser = new User()
                 {
                     UserName = request.UserName,
-                    Email = request.Email
+                    Email = request.Email,
+                    ProfileId = request.ProfileId
                 };
                 newUser.PasswordHash = _hasher.HashPassword(newUser, request.Password);
                 _dbcontext.Users.Add(newUser);
