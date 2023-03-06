@@ -20,3 +20,5 @@ Server/bin/Debug/net6.0/Swashbuckle.AspNetCore.SwaggerUI.dll
 Server/Properties/launchSettings.json
 Server/Properties/launchSettings.json
 /Server/bin/Debug/net6.0
+Client/.editorconfig
+/Client/.vscode
