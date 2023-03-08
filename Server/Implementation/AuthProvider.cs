@@ -14,30 +14,12 @@ namespace Rekrut.Implementation
     public class AuthProvider : IAuthProvider
     {
         private readonly RekrutContext _dbcontext;
-        private readonly PasswordHasher<User> _hasher;
         private readonly IConfiguration _configuration;
 
         public AuthProvider(RekrutContext context, IConfiguration configuration) 
         {
             _dbcontext = context;
-            _hasher = new PasswordHasher<User>();
             _configuration = configuration;
-        }
-
-        public async Task<List<string?>> GetUserNames()
-        {
-            var result = new List<string?>();
-            try
-            {
-                result = await _dbcontext.Users
-                    .Select(u => u.UserName)
-                    .ToListAsync();
-            }
-            catch (Exception ex) 
-            {
-                Console.WriteLine(ex);
-            }
-            return result;
         }
 
         public async Task<AuthResponse> Login(LoginRequest request)
@@ -52,14 +34,15 @@ namespace Rekrut.Implementation
                     .FirstOrDefaultAsync(u => u.Email == request.Login || u.UserName == request.Login);
                 if (user != null) 
                 {
+                    var _hasher = new PasswordHasher<User>();
                     result.AuthenticationSuccess = _hasher.VerifyHashedPassword(user, user.PasswordHash, request.Password) == PasswordVerificationResult.Success;
                     if(result.AuthenticationSuccess)
                     {
                         result.AccessToken = GenerateToken(user, true);
                         result.RefreshToken = GenerateToken(user, false);
-                        result.Features = await _dbcontext.ProfileFeatureMaps
+                        result.FeatureCodes = await _dbcontext.ProfileFeatureMaps
                             .Where(p => p.ProfileId == user.ProfileId)
-                            .Select(p => p.Feature.Name).ToListAsync();
+                            .Select(p => p.Feature.Code).ToListAsync();
                     }
                 }
             }
@@ -79,7 +62,7 @@ namespace Rekrut.Implementation
             try
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
-                var key = _configuration["Jwt:Key"];
+                var key = _configuration["Jwt:RefreshKey"];
                 if (!string.IsNullOrEmpty(key))
                 {
                     tokenHandler.ValidateToken(refreshToken, new TokenValidationParameters
@@ -117,36 +100,22 @@ namespace Rekrut.Implementation
             return result;
         }
 
-        public async Task<bool> Register(RegistrationRequest request)
-        {
-            var result = false;
-            try
-            {
-                var newUser = new User()
-                {
-                    UserName = request.UserName,
-                    Email = request.Email,
-                    ProfileId = request.ProfileId
-                };
-                newUser.PasswordHash = _hasher.HashPassword(newUser, request.Password);
-                _dbcontext.Users.Add(newUser);
-                result = await _dbcontext.SaveChangesAsync() > 0;
-            }
-            catch(Exception ex) 
-            {
-                Console.WriteLine(ex);
-            }
-            return result;
-        }
-
         private string GenerateToken(User user, bool isAccess)
         {
             var stringToken = "";
-            var lifeTime = isAccess ?
-                DateTime.UtcNow.AddMinutes(Convert.ToInt16(_configuration["Jwt:AccessLifeTime"])) :
-                DateTime.UtcNow.AddMinutes(Convert.ToInt16(_configuration["Jwt:RefreshLifeTime"]));
-            var secretKey = _configuration["Jwt:Key"];
-            if(secretKey != null && user.UserName != null && user.Email != null) 
+            DateTime lifeTime;
+            string? secretKey;
+            if (isAccess)
+            {
+                secretKey = _configuration["Jwt:AccessKey"];
+                lifeTime = DateTime.UtcNow.AddMinutes(Convert.ToInt16(_configuration["Jwt:AccessLifeTime"]));
+            }
+            else
+            {
+                secretKey = _configuration["Jwt:RefreshKey"];
+                lifeTime = DateTime.UtcNow.AddMinutes(Convert.ToInt16(_configuration["Jwt:RefreshLifeTime"]));
+            }
+            if (secretKey != null && user.UserName != null && user.Email != null) 
             {
                 var key = Encoding.ASCII.GetBytes(secretKey);
                 var tokenDescriptor = new SecurityTokenDescriptor

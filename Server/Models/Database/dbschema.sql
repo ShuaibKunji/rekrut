@@ -5,7 +5,7 @@
 -- Dumped from database version 15.2
 -- Dumped by pg_dump version 15.2
 
--- Started on 2023-03-04 13:20:30
+-- Started on 2023-03-08 17:48:48
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -203,7 +203,9 @@ ALTER TABLE business."Recruiter" ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTIT
 CREATE TABLE system."Feature" (
     id bigint NOT NULL,
     name character varying,
-    description character varying
+    description character varying,
+    code character varying,
+    route character varying
 );
 
 
@@ -232,7 +234,8 @@ ALTER TABLE system."Feature" ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
 CREATE TABLE system."Profile" (
     id bigint NOT NULL,
     name character varying,
-    description character varying
+    description character varying,
+    code character varying
 );
 
 
@@ -484,7 +487,7 @@ ALTER TABLE ONLY system."User"
     ADD CONSTRAINT "User_profile_id_fkey" FOREIGN KEY (profile_id) REFERENCES system."Profile"(id) NOT VALID;
 
 
--- Completed on 2023-03-04 13:20:30
+-- Completed on 2023-03-08 17:48:48
 
 --
 -- PostgreSQL database dump complete

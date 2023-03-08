@@ -6,14 +6,9 @@ namespace Rekrut.Models.Database;
 
 public partial class RekrutContext : DbContext
 {
-    public RekrutContext()
-    {
-    }
+    public RekrutContext() {}
 
-    public RekrutContext(DbContextOptions<RekrutContext> options)
-        : base(options)
-    {
-    }
+    public RekrutContext(DbContextOptions<RekrutContext> options) : base(options) {}
 
     public virtual DbSet<Applicant> Applicants { get; set; }
 
@@ -67,12 +62,18 @@ public partial class RekrutContext : DbContext
             entity.Property(e => e.Id)
                 .UseIdentityAlwaysColumn()
                 .HasColumnName("id");
+            entity.Property(e => e.Code)
+                .HasColumnType("character varying")
+                .HasColumnName("code");
             entity.Property(e => e.Description)
                 .HasColumnType("character varying")
                 .HasColumnName("description");
             entity.Property(e => e.Name)
                 .HasColumnType("character varying")
                 .HasColumnName("name");
+            entity.Property(e => e.Route)
+                .HasColumnType("character varying")
+                .HasColumnName("route");
         });
 
         modelBuilder.Entity<Job>(entity =>
@@ -129,6 +130,9 @@ public partial class RekrutContext : DbContext
             entity.Property(e => e.Id)
                 .UseIdentityAlwaysColumn()
                 .HasColumnName("id");
+            entity.Property(e => e.Code)
+                .HasColumnType("character varying")
+                .HasColumnName("code");
             entity.Property(e => e.Description)
                 .HasColumnType("character varying")
                 .HasColumnName("description");

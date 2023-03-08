@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Rekrut.Abstraction;
+using Rekrut.Helpers;
 using Rekrut.Implementation;
 using Rekrut.Models.Database;
 using System.Text;
@@ -26,6 +27,10 @@ builder.Services.AddEntityFrameworkNpgsql().AddDbContext<RekrutContext>(opt =>
 
 //Binding implementations to abstractions
 builder.Services.AddScoped<IAuthProvider,AuthProvider>();
+builder.Services.AddScoped<IAccountProvider,AccountProvider>();
+
+//AutoMapper
+builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 
 //JWT based authentication and authorization
 builder.Services.AddAuthentication(options =>
@@ -40,11 +45,11 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey
-        (Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+        (Encoding.UTF8.GetBytes(builder.Configuration["Jwt:AccessKey"])),
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidateIssuerSigningKey = true,
-        ValidateLifetime = false
+        ValidateLifetime = true
     };
 });
 builder.Services.AddAuthorization();
