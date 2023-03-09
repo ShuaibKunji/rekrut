@@ -2,7 +2,11 @@
 {
     public class LoginRequest
     {
-        public string? Login { get; set; }
-        public string? Password { get; set; }
+        public LoginRequest() {
+            Login = "";
+            Password = "";
+        }
+        public string Login { get; set; }
+        public string Password { get; set; }
     }
 }

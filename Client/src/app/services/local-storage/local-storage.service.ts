@@ -5,33 +5,31 @@ import { FeatureDTO } from "../base/apiclient";
   providedIn: "root",
 })
 export class LocalStorageService {
-  constructor() {}
-
   private static access = "ACCESS-TOKEN";
   private static refresh = "REFRESH-TOKEN";
   private static feats = "FEATURES";
 
-  public get accessToken(): string | null {
+  public get accessToken(): string | undefined | null {
     return window.localStorage.getItem(LocalStorageService.access);
   }
 
-  public set accessToken(value: string | null) {
-    if (value !== null) {
+  public set accessToken(value: string | undefined | null) {
+    if (value !== null && value != undefined) {
       window.localStorage.setItem(LocalStorageService.access, value);
     }
   }
 
-  public get refreshToken(): string | null {
+  public get refreshToken(): string | undefined | null {
     return window.localStorage.getItem(LocalStorageService.refresh);
   }
 
-  public set refreshToken(value: string | null) {
-    if (value !== null) {
+  public set refreshToken(value: string | undefined | null) {
+    if (value !== null && value != undefined) {
       window.localStorage.setItem(LocalStorageService.refresh, value);
     }
   }
 
-  public get features(): FeatureDTO[] {
+  public get features(): FeatureDTO[] | null | undefined {
     let features = window.localStorage.getItem(LocalStorageService.feats);
     if (features != null) {
       let result: FeatureDTO[] = JSON.parse(features);
@@ -40,7 +38,7 @@ export class LocalStorageService {
     return [];
   }
 
-  public set features(value: FeatureDTO[]) {
+  public set features(value: FeatureDTO[] | null | undefined) {
     window.localStorage.setItem(
       LocalStorageService.feats,
       JSON.stringify(value)

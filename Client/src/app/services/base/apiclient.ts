@@ -42,7 +42,8 @@ export class AccountsClient extends ApiBase {
   ) {
     super();
     this.http = http;
-    this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    this.baseUrl =
+      baseUrl !== undefined && baseUrl !== null ? baseUrl : this.getBaseUrl("");
   }
 
   /**
@@ -423,7 +424,8 @@ export class AuthClient extends ApiBase {
   ) {
     super();
     this.http = http;
-    this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    this.baseUrl =
+      baseUrl !== undefined && baseUrl !== null ? baseUrl : this.getBaseUrl("");
   }
 
   /**
@@ -669,6 +671,8 @@ export class AuthResponse implements IAuthResponse {
   authenticationSuccess?: boolean;
   accessToken?: string | null;
   refreshToken?: string | null;
+  name?: string | null;
+  profile?: ProfileDTO;
   featureCodes?: FeatureDTO[] | null;
 
   constructor(data?: IAuthResponse) {
@@ -690,6 +694,10 @@ export class AuthResponse implements IAuthResponse {
         _data["accessToken"] !== undefined ? _data["accessToken"] : <any>null;
       this.refreshToken =
         _data["refreshToken"] !== undefined ? _data["refreshToken"] : <any>null;
+      this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
+      this.profile = _data["profile"]
+        ? ProfileDTO.fromJS(_data["profile"])
+        : <any>null;
       if (Array.isArray(_data["featureCodes"])) {
         this.featureCodes = [] as any;
         for (let item of _data["featureCodes"])
@@ -717,6 +725,8 @@ export class AuthResponse implements IAuthResponse {
       this.accessToken !== undefined ? this.accessToken : <any>null;
     data["refreshToken"] =
       this.refreshToken !== undefined ? this.refreshToken : <any>null;
+    data["name"] = this.name !== undefined ? this.name : <any>null;
+    data["profile"] = this.profile ? this.profile.toJSON() : <any>null;
     if (Array.isArray(this.featureCodes)) {
       data["featureCodes"] = [];
       for (let item of this.featureCodes)
@@ -730,6 +740,8 @@ export interface IAuthResponse {
   authenticationSuccess?: boolean;
   accessToken?: string | null;
   refreshToken?: string | null;
+  name?: string | null;
+  profile?: ProfileDTO;
   featureCodes?: FeatureDTO[] | null;
 }
 
@@ -814,6 +826,50 @@ export class LoginRequest implements ILoginRequest {
 export interface ILoginRequest {
   login?: string | null;
   password?: string | null;
+}
+
+export class ProfileDTO implements IProfileDTO {
+  profileName?: string | null;
+  profileCode?: string | null;
+
+  constructor(data?: IProfileDTO) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.profileName =
+        _data["profileName"] !== undefined ? _data["profileName"] : <any>null;
+      this.profileCode =
+        _data["profileCode"] !== undefined ? _data["profileCode"] : <any>null;
+    }
+  }
+
+  static fromJS(data: any): ProfileDTO {
+    data = typeof data === "object" ? data : {};
+    let result = new ProfileDTO();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["profileName"] =
+      this.profileName !== undefined ? this.profileName : <any>null;
+    data["profileCode"] =
+      this.profileCode !== undefined ? this.profileCode : <any>null;
+    return data;
+  }
+}
+
+export interface IProfileDTO {
+  profileName?: string | null;
+  profileCode?: string | null;
 }
 
 export class RegistrationForm implements IRegistrationForm {

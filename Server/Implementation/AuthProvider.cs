@@ -35,7 +35,10 @@ namespace Rekrut.Implementation
             try
             {
                 var user = await _dbcontext.Users
-                    .FirstOrDefaultAsync(u => u.Email == request.Login || u.UserName == request.Login);
+                    .Include(u => u.Applicant)
+                    .Include(u => u.Recruiter)
+                    .Include(u => u.Profile)
+                    .FirstOrDefaultAsync(u => u.Email == request.Login.ToLower() || u.UserName == request.Login.ToLower());
                 if (user != null) 
                 {
                     var _hasher = new PasswordHasher<User>();
@@ -48,6 +51,8 @@ namespace Rekrut.Implementation
                         result.AccessToken = GenerateToken(user, true);
                         result.RefreshToken = GenerateToken(user, false);
                         result.FeatureCodes = _mapper.Map<List<FeatureDTO>>(accessFeatures);
+                        result.Name = user.Applicant != null ? user.Applicant?.FullName : user.Recruiter?.FullName;
+                        result.Profile = _mapper.Map<ProfileDTO>(user.Profile);
                     }
                 }
             }
@@ -88,12 +93,16 @@ namespace Rekrut.Implementation
                         var user = await _dbcontext.Users.FirstOrDefaultAsync(u => u.UserName == userName);
                         if (user != null)
                         {
+                            var accessFeatures = await _dbcontext.ProfileFeatureMaps
+                            .Where(p => p.ProfileId == user.ProfileId)
+                            .Select(p => p.Feature).ToListAsync();
                             result = new AuthResponse()
                             {
                                 AuthenticationSuccess = true,
                                 AccessToken = GenerateToken(user, true),
-                                RefreshToken = refreshToken
-                            };
+                                RefreshToken = refreshToken,
+                                FeatureCodes = _mapper.Map<List<FeatureDTO>>(accessFeatures)
+                        };
                         }
                     }
                 }

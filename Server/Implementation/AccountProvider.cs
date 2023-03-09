@@ -101,8 +101,8 @@ namespace Rekrut.Implementation
             {
                 var newUser = new User()
                 {
-                    UserName = registrationForm.UserName,
-                    Email = registrationForm.Email,
+                    UserName = registrationForm.UserName?.ToLower(),
+                    Email = registrationForm.Email?.ToLower(),
                     ProfileId = profile.Id,
                 };
                 var _hasher = new PasswordHasher<User>();
