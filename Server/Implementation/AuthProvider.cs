@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Rekrut.Abstraction;
 using Rekrut.Models.ClientModels;
 using Rekrut.Models.Database;
 using Rekrut.Models.Database.System;
+using Rekrut.Models.DTO;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -15,11 +17,13 @@ namespace Rekrut.Implementation
     {
         private readonly RekrutContext _dbcontext;
         private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
 
-        public AuthProvider(RekrutContext context, IConfiguration configuration) 
+        public AuthProvider(RekrutContext context, IConfiguration configuration, IMapper mapper) 
         {
             _dbcontext = context;
             _configuration = configuration;
+            _mapper = mapper;
         }
 
         public async Task<AuthResponse> Login(LoginRequest request)
@@ -38,11 +42,12 @@ namespace Rekrut.Implementation
                     result.AuthenticationSuccess = _hasher.VerifyHashedPassword(user, user.PasswordHash, request.Password) == PasswordVerificationResult.Success;
                     if(result.AuthenticationSuccess)
                     {
+                        var accessFeatures = await _dbcontext.ProfileFeatureMaps
+                            .Where(p => p.ProfileId == user.ProfileId)
+                            .Select(p => p.Feature).ToListAsync();
                         result.AccessToken = GenerateToken(user, true);
                         result.RefreshToken = GenerateToken(user, false);
-                        result.FeatureCodes = await _dbcontext.ProfileFeatureMaps
-                            .Where(p => p.ProfileId == user.ProfileId)
-                            .Select(p => p.Feature.Code).ToListAsync();
+                        result.FeatureCodes = _mapper.Map<List<FeatureDTO>>(accessFeatures);
                     }
                 }
             }
