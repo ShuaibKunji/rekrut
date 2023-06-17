@@ -1,45 +1,45 @@
-<div class="loginForm">
-  <div *ngIf="!isLoggedIn">
+<div>
+  <mat-card class="loginForm">
+    <mat-card-header>
+      <mat-card-title>Please login to continue</mat-card-title>
+    </mat-card-header>
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit($event)">
-      <div class="form-group">
-        <label for="login">Username or Email: </label>
-        <input
-          #login
-          type="text"
-          class="form-control"
-          formControlName="login"
-          aria-describedby="emailHelp"
-          placeholder="Enter email"
-        />
-        <small id="emailHelp" class="form-text text-muted"
-          >Even Username works really!</small
-        >
-      </div>
-      <div class="form-group">
-        <label for="password">Password: </label>
-        <input
-          #password
-          type="password"
-          formControlName="password"
-          class="form-control"
-          placeholder="Password"
-        />
-      </div>
-      <button
-        type="submit"
-        [disabled]="!loginForm.valid"
-        class="btn btn-primary"
-      >
-        Login
-      </button>
+      <mat-card-content>
+        <div class="form-group">
+          <label for="login">Username or Email: </label>
+          <input
+            #login
+            type="text"
+            class="form-control"
+            formControlName="login"
+            aria-describedby="emailHelp"
+            placeholder="Enter email"
+          />
+          <small id="emailHelp" class="form-text text-muted"
+            >Even Username works really!</small
+          >
+        </div>
+        <div class="form-group">
+          <label for="password">Password: </label>
+          <input
+            #password
+            type="password"
+            formControlName="password"
+            class="form-control"
+            placeholder="Password"
+          />
+        </div>
+        <span>{{ errorMessage }}</span>
+        <mat-divider></mat-divider>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-button type="submit" [disabled]="!loginForm.valid">
+          Login
+        </button>
+      </mat-card-actions>
     </form>
-    <span>{{ errorMessage }}</span>
-  </div>
-  <div *ngIf="isLoggedIn" class="jumbotron">
-    <hr class="my-4" />
-    <p>Welcome {{ fullName }}!</p>
-    <p class="lead">
-      <button (click)="Logout()" class="btn btn-danger btn-lg">Logout</button>
-    </p>
-  </div>
+    <mat-card-footer *ngIf="loading">
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    </mat-card-footer>
+  </mat-card>
 </div>
