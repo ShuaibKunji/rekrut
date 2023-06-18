@@ -1,7 +1,13 @@
 import { Component } from "@angular/core";
-import { FormGroup, FormControl, Validators } from "@angular/forms";
+import {
+  FormGroup,
+  FormControl,
+  Validators,
+  FormGroupDirective,
+  NgForm,
+} from "@angular/forms";
+import { ErrorStateMatcher } from "@angular/material/core";
 import { Router } from "@angular/router";
-import { Routes } from "src/app/constants/routes.";
 import { AuthService } from "src/app/services/auth/auth.service";
 import { LoginRequest } from "src/app/services/base/apiclient";
 import { LocalStorageService } from "src/app/services/local-storage/local-storage.service";
@@ -12,19 +18,31 @@ import { LocalStorageService } from "src/app/services/local-storage/local-storag
   styleUrls: ["./login.component.scss"],
 })
 export class LoginComponent {
-  loginForm: FormGroup;
+  loginForm: FormGroup = new FormGroup({
+    login: new FormControl("", [Validators.required]),
+    password: new FormControl("", [Validators.required]),
+  });
+
+  get loginFormControl(): FormControl {
+    return this.loginForm.get("login") as FormControl;
+  }
+
+  matcher = new FormErrorStateMatcher();
+
+  get passwordFormControl(): FormControl {
+    return this.loginForm.get("password") as FormControl;
+  }
+
   errorMessage: string = "";
   loading: boolean = false;
+  hide: boolean = true;
 
   constructor(
     private auth: AuthService,
     private storage: LocalStorageService,
     private router: Router
   ) {
-    this.loginForm = new FormGroup({
-      login: new FormControl("", [Validators.required]),
-      password: new FormControl("", [Validators.required]),
-    });
+    this.loginForm.controls["login"];
   }
 
   onSubmit(event: SubmitEvent) {
@@ -37,10 +55,26 @@ export class LoginComponent {
         this.errorMessage = "";
         this.auth.setAuthTokens(response.accessToken, response.refreshToken);
         this.storage.features = response.featureCodes;
-        this.router.navigate([Routes.HOME]);
+        this.storage.userDetails = response.userDetails;
+        this.router.navigate(["/"]);
       } else {
         this.errorMessage = "Failed to authenticate. Try Again";
       }
     });
+  }
+}
+
+/** Error when invalid control is dirty, touched, or submitted. */
+export class FormErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(
+    control: FormControl | null,
+    form: FormGroupDirective | NgForm | null
+  ): boolean {
+    const isSubmitted = form && form.submitted;
+    return !!(
+      control &&
+      control.invalid &&
+      (control.dirty || control.touched || isSubmitted)
+    );
   }
 }

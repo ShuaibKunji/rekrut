@@ -1,13 +1,14 @@
 import { Injectable } from "@angular/core";
-import { FeatureDTO } from "../base/apiclient";
+import { FeatureDTO, UserDetails } from "../base/apiclient";
 
 @Injectable({
   providedIn: "root",
 })
 export class LocalStorageService {
-  private static access = "ACCESS-TOKEN";
-  private static refresh = "REFRESH-TOKEN";
+  private static access = "ACCESS_TOKEN";
+  private static refresh = "REFRESH_TOKEN";
   private static feats = "FEATURES";
+  private static deets = "USER_DETAILS";
 
   public get accessToken(): string | undefined | null {
     return window.localStorage.getItem(LocalStorageService.access);
@@ -29,7 +30,7 @@ export class LocalStorageService {
     }
   }
 
-  public get features(): FeatureDTO[] | null | undefined {
+  public get features(): FeatureDTO[] | undefined {
     let features = window.localStorage.getItem(LocalStorageService.feats);
     if (features != null) {
       let result: FeatureDTO[] = JSON.parse(features);
@@ -38,10 +39,30 @@ export class LocalStorageService {
     return [];
   }
 
-  public set features(value: FeatureDTO[] | null | undefined) {
+  public set features(value: FeatureDTO[] | undefined) {
     window.localStorage.setItem(
       LocalStorageService.feats,
       JSON.stringify(value)
     );
+  }
+
+  public set userDetails(value: UserDetails | undefined) {
+    window.localStorage.setItem(
+      LocalStorageService.deets,
+      JSON.stringify(value)
+    );
+  }
+
+  public get userDetails(): UserDetails | undefined {
+    let details = window.localStorage.getItem(LocalStorageService.deets);
+    if (details != undefined) {
+      let result: UserDetails = JSON.parse(details);
+      return result;
+    }
+    return undefined;
+  }
+
+  public clear() {
+    window.localStorage.clear();
   }
 }

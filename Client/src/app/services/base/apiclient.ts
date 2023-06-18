@@ -613,10 +613,10 @@ export class AuthClient extends ApiBase {
 
 export class ApplicantDTO implements IApplicantDTO {
   id?: number;
-  fullName?: string | null;
-  phoneNumber?: string | null;
-  userName?: string | null;
-  email?: string | null;
+  fullName?: string | undefined;
+  phoneNumber?: string | undefined;
+  userName?: string | undefined;
+  email?: string | undefined;
 
   constructor(data?: IApplicantDTO) {
     if (data) {
@@ -629,14 +629,11 @@ export class ApplicantDTO implements IApplicantDTO {
 
   init(_data?: any) {
     if (_data) {
-      this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
-      this.fullName =
-        _data["fullName"] !== undefined ? _data["fullName"] : <any>null;
-      this.phoneNumber =
-        _data["phoneNumber"] !== undefined ? _data["phoneNumber"] : <any>null;
-      this.userName =
-        _data["userName"] !== undefined ? _data["userName"] : <any>null;
-      this.email = _data["email"] !== undefined ? _data["email"] : <any>null;
+      this.id = _data["id"];
+      this.fullName = _data["fullName"];
+      this.phoneNumber = _data["phoneNumber"];
+      this.userName = _data["userName"];
+      this.email = _data["email"];
     }
   }
 
@@ -649,31 +646,30 @@ export class ApplicantDTO implements IApplicantDTO {
 
   toJSON(data?: any) {
     data = typeof data === "object" ? data : {};
-    data["id"] = this.id !== undefined ? this.id : <any>null;
-    data["fullName"] = this.fullName !== undefined ? this.fullName : <any>null;
-    data["phoneNumber"] =
-      this.phoneNumber !== undefined ? this.phoneNumber : <any>null;
-    data["userName"] = this.userName !== undefined ? this.userName : <any>null;
-    data["email"] = this.email !== undefined ? this.email : <any>null;
+    data["id"] = this.id;
+    data["fullName"] = this.fullName;
+    data["phoneNumber"] = this.phoneNumber;
+    data["userName"] = this.userName;
+    data["email"] = this.email;
     return data;
   }
 }
 
 export interface IApplicantDTO {
   id?: number;
-  fullName?: string | null;
-  phoneNumber?: string | null;
-  userName?: string | null;
-  email?: string | null;
+  fullName?: string | undefined;
+  phoneNumber?: string | undefined;
+  userName?: string | undefined;
+  email?: string | undefined;
 }
 
 export class AuthResponse implements IAuthResponse {
   authenticationSuccess?: boolean;
-  accessToken?: string | null;
-  refreshToken?: string | null;
-  name?: string | null;
+  accessToken?: string | undefined;
+  refreshToken?: string | undefined;
+  userDetails?: UserDetails;
   profile?: ProfileDTO;
-  featureCodes?: FeatureDTO[] | null;
+  featureCodes?: FeatureDTO[] | undefined;
 
   constructor(data?: IAuthResponse) {
     if (data) {
@@ -686,24 +682,19 @@ export class AuthResponse implements IAuthResponse {
 
   init(_data?: any) {
     if (_data) {
-      this.authenticationSuccess =
-        _data["authenticationSuccess"] !== undefined
-          ? _data["authenticationSuccess"]
-          : <any>null;
-      this.accessToken =
-        _data["accessToken"] !== undefined ? _data["accessToken"] : <any>null;
-      this.refreshToken =
-        _data["refreshToken"] !== undefined ? _data["refreshToken"] : <any>null;
-      this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
+      this.authenticationSuccess = _data["authenticationSuccess"];
+      this.accessToken = _data["accessToken"];
+      this.refreshToken = _data["refreshToken"];
+      this.userDetails = _data["userDetails"]
+        ? UserDetails.fromJS(_data["userDetails"])
+        : <any>undefined;
       this.profile = _data["profile"]
         ? ProfileDTO.fromJS(_data["profile"])
-        : <any>null;
+        : <any>undefined;
       if (Array.isArray(_data["featureCodes"])) {
         this.featureCodes = [] as any;
         for (let item of _data["featureCodes"])
           this.featureCodes!.push(FeatureDTO.fromJS(item));
-      } else {
-        this.featureCodes = <any>null;
       }
     }
   }
@@ -717,16 +708,13 @@ export class AuthResponse implements IAuthResponse {
 
   toJSON(data?: any) {
     data = typeof data === "object" ? data : {};
-    data["authenticationSuccess"] =
-      this.authenticationSuccess !== undefined
-        ? this.authenticationSuccess
-        : <any>null;
-    data["accessToken"] =
-      this.accessToken !== undefined ? this.accessToken : <any>null;
-    data["refreshToken"] =
-      this.refreshToken !== undefined ? this.refreshToken : <any>null;
-    data["name"] = this.name !== undefined ? this.name : <any>null;
-    data["profile"] = this.profile ? this.profile.toJSON() : <any>null;
+    data["authenticationSuccess"] = this.authenticationSuccess;
+    data["accessToken"] = this.accessToken;
+    data["refreshToken"] = this.refreshToken;
+    data["userDetails"] = this.userDetails
+      ? this.userDetails.toJSON()
+      : <any>undefined;
+    data["profile"] = this.profile ? this.profile.toJSON() : <any>undefined;
     if (Array.isArray(this.featureCodes)) {
       data["featureCodes"] = [];
       for (let item of this.featureCodes)
@@ -738,16 +726,16 @@ export class AuthResponse implements IAuthResponse {
 
 export interface IAuthResponse {
   authenticationSuccess?: boolean;
-  accessToken?: string | null;
-  refreshToken?: string | null;
-  name?: string | null;
+  accessToken?: string | undefined;
+  refreshToken?: string | undefined;
+  userDetails?: UserDetails;
   profile?: ProfileDTO;
-  featureCodes?: FeatureDTO[] | null;
+  featureCodes?: FeatureDTO[] | undefined;
 }
 
 export class FeatureDTO implements IFeatureDTO {
-  featureCode?: string | null;
-  route?: string | null;
+  featureCode?: string | undefined;
+  route?: string | undefined;
 
   constructor(data?: IFeatureDTO) {
     if (data) {
@@ -760,9 +748,8 @@ export class FeatureDTO implements IFeatureDTO {
 
   init(_data?: any) {
     if (_data) {
-      this.featureCode =
-        _data["featureCode"] !== undefined ? _data["featureCode"] : <any>null;
-      this.route = _data["route"] !== undefined ? _data["route"] : <any>null;
+      this.featureCode = _data["featureCode"];
+      this.route = _data["route"];
     }
   }
 
@@ -775,21 +762,20 @@ export class FeatureDTO implements IFeatureDTO {
 
   toJSON(data?: any) {
     data = typeof data === "object" ? data : {};
-    data["featureCode"] =
-      this.featureCode !== undefined ? this.featureCode : <any>null;
-    data["route"] = this.route !== undefined ? this.route : <any>null;
+    data["featureCode"] = this.featureCode;
+    data["route"] = this.route;
     return data;
   }
 }
 
 export interface IFeatureDTO {
-  featureCode?: string | null;
-  route?: string | null;
+  featureCode?: string | undefined;
+  route?: string | undefined;
 }
 
 export class LoginRequest implements ILoginRequest {
-  login?: string | null;
-  password?: string | null;
+  login?: string | undefined;
+  password?: string | undefined;
 
   constructor(data?: ILoginRequest) {
     if (data) {
@@ -802,9 +788,8 @@ export class LoginRequest implements ILoginRequest {
 
   init(_data?: any) {
     if (_data) {
-      this.login = _data["login"] !== undefined ? _data["login"] : <any>null;
-      this.password =
-        _data["password"] !== undefined ? _data["password"] : <any>null;
+      this.login = _data["login"];
+      this.password = _data["password"];
     }
   }
 
@@ -817,20 +802,20 @@ export class LoginRequest implements ILoginRequest {
 
   toJSON(data?: any) {
     data = typeof data === "object" ? data : {};
-    data["login"] = this.login !== undefined ? this.login : <any>null;
-    data["password"] = this.password !== undefined ? this.password : <any>null;
+    data["login"] = this.login;
+    data["password"] = this.password;
     return data;
   }
 }
 
 export interface ILoginRequest {
-  login?: string | null;
-  password?: string | null;
+  login?: string | undefined;
+  password?: string | undefined;
 }
 
 export class ProfileDTO implements IProfileDTO {
-  profileName?: string | null;
-  profileCode?: string | null;
+  profileName?: string | undefined;
+  profileCode?: string | undefined;
 
   constructor(data?: IProfileDTO) {
     if (data) {
@@ -843,10 +828,8 @@ export class ProfileDTO implements IProfileDTO {
 
   init(_data?: any) {
     if (_data) {
-      this.profileName =
-        _data["profileName"] !== undefined ? _data["profileName"] : <any>null;
-      this.profileCode =
-        _data["profileCode"] !== undefined ? _data["profileCode"] : <any>null;
+      this.profileName = _data["profileName"];
+      this.profileCode = _data["profileCode"];
     }
   }
 
@@ -859,26 +842,24 @@ export class ProfileDTO implements IProfileDTO {
 
   toJSON(data?: any) {
     data = typeof data === "object" ? data : {};
-    data["profileName"] =
-      this.profileName !== undefined ? this.profileName : <any>null;
-    data["profileCode"] =
-      this.profileCode !== undefined ? this.profileCode : <any>null;
+    data["profileName"] = this.profileName;
+    data["profileCode"] = this.profileCode;
     return data;
   }
 }
 
 export interface IProfileDTO {
-  profileName?: string | null;
-  profileCode?: string | null;
+  profileName?: string | undefined;
+  profileCode?: string | undefined;
 }
 
 export class RegistrationForm implements IRegistrationForm {
-  userName?: string | null;
-  fullName?: string | null;
-  phoneNumber?: string | null;
-  email?: string | null;
-  password?: string | null;
-  profileCode?: string | null;
+  userName?: string | undefined;
+  fullName?: string | undefined;
+  phoneNumber?: string | undefined;
+  email?: string | undefined;
+  password?: string | undefined;
+  profileCode?: string | undefined;
 
   constructor(data?: IRegistrationForm) {
     if (data) {
@@ -891,17 +872,12 @@ export class RegistrationForm implements IRegistrationForm {
 
   init(_data?: any) {
     if (_data) {
-      this.userName =
-        _data["userName"] !== undefined ? _data["userName"] : <any>null;
-      this.fullName =
-        _data["fullName"] !== undefined ? _data["fullName"] : <any>null;
-      this.phoneNumber =
-        _data["phoneNumber"] !== undefined ? _data["phoneNumber"] : <any>null;
-      this.email = _data["email"] !== undefined ? _data["email"] : <any>null;
-      this.password =
-        _data["password"] !== undefined ? _data["password"] : <any>null;
-      this.profileCode =
-        _data["profileCode"] !== undefined ? _data["profileCode"] : <any>null;
+      this.userName = _data["userName"];
+      this.fullName = _data["fullName"];
+      this.phoneNumber = _data["phoneNumber"];
+      this.email = _data["email"];
+      this.password = _data["password"];
+      this.profileCode = _data["profileCode"];
     }
   }
 
@@ -914,25 +890,71 @@ export class RegistrationForm implements IRegistrationForm {
 
   toJSON(data?: any) {
     data = typeof data === "object" ? data : {};
-    data["userName"] = this.userName !== undefined ? this.userName : <any>null;
-    data["fullName"] = this.fullName !== undefined ? this.fullName : <any>null;
-    data["phoneNumber"] =
-      this.phoneNumber !== undefined ? this.phoneNumber : <any>null;
-    data["email"] = this.email !== undefined ? this.email : <any>null;
-    data["password"] = this.password !== undefined ? this.password : <any>null;
-    data["profileCode"] =
-      this.profileCode !== undefined ? this.profileCode : <any>null;
+    data["userName"] = this.userName;
+    data["fullName"] = this.fullName;
+    data["phoneNumber"] = this.phoneNumber;
+    data["email"] = this.email;
+    data["password"] = this.password;
+    data["profileCode"] = this.profileCode;
     return data;
   }
 }
 
 export interface IRegistrationForm {
-  userName?: string | null;
-  fullName?: string | null;
-  phoneNumber?: string | null;
-  email?: string | null;
-  password?: string | null;
-  profileCode?: string | null;
+  userName?: string | undefined;
+  fullName?: string | undefined;
+  phoneNumber?: string | undefined;
+  email?: string | undefined;
+  password?: string | undefined;
+  profileCode?: string | undefined;
+}
+
+export class UserDetails implements IUserDetails {
+  userId?: number;
+  userName?: string | undefined;
+  fullName?: string | undefined;
+  userEmail?: string | undefined;
+
+  constructor(data?: IUserDetails) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.userId = _data["userId"];
+      this.userName = _data["userName"];
+      this.fullName = _data["fullName"];
+      this.userEmail = _data["userEmail"];
+    }
+  }
+
+  static fromJS(data: any): UserDetails {
+    data = typeof data === "object" ? data : {};
+    let result = new UserDetails();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === "object" ? data : {};
+    data["userId"] = this.userId;
+    data["userName"] = this.userName;
+    data["fullName"] = this.fullName;
+    data["userEmail"] = this.userEmail;
+    return data;
+  }
+}
+
+export interface IUserDetails {
+  userId?: number;
+  userName?: string | undefined;
+  fullName?: string | undefined;
+  userEmail?: string | undefined;
 }
 
 export class ApiException extends Error {

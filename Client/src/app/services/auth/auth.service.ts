@@ -3,13 +3,18 @@ import { Injectable } from "@angular/core";
 import { from, Observable } from "rxjs";
 import { AuthClient, AuthResponse, LoginRequest } from "../base/apiclient";
 import { LocalStorageService } from "../local-storage/local-storage.service";
+import { Router } from "@angular/router";
 
 @Injectable({
   providedIn: "root",
 })
 export class AuthService {
   client: AuthClient;
-  constructor(private http: HttpClient, private storage: LocalStorageService) {
+  constructor(
+    private http: HttpClient,
+    private storage: LocalStorageService,
+    private router: Router
+  ) {
     this.client = new AuthClient(http);
   }
 
@@ -27,11 +32,5 @@ export class AuthService {
   ): void {
     this.storage.accessToken = accessToken;
     this.storage.refreshToken = refreshToken;
-  }
-
-  public logout() {
-    this.storage.accessToken = "";
-    this.storage.refreshToken = "";
-    this.storage.features = [];
   }
 }

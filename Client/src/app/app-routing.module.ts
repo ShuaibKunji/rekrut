@@ -16,11 +16,11 @@ const routes: Routes = [
     },
   },
   {
-    path: "home",
+    path: "",
     component: HomeComponent,
   },
   {
-    path: "",
+    path: "**",
     component: InvalidComponent,
     data: {
       message: "Please check the route you have entered",

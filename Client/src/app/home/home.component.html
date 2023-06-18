@@ -1,1 +1,24 @@
-<p>home works!</p>
+<div class="main">
+  <mat-toolbar color="primary">
+    <span (click)="toggleSideNav()" class="logo">Rekrut</span>
+    <span class="spacer"></span>
+    <button
+      *ngIf="isAuthenticated"
+      mat-button
+      [matMenuTriggerFor]="menu"
+      #menuTrigger
+    >
+      {{ username }}
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="logout()">Logout</button>
+    </mat-menu>
+    <button *ngIf="!isAuthenticated" mat-button (click)="login()">
+      Login/Register
+    </button>
+  </mat-toolbar>
+  <mat-drawer-container class="container">
+    <mat-drawer mode="side" [opened]="showSideNav">Drawer content</mat-drawer>
+    <mat-drawer-content> content </mat-drawer-content>
+  </mat-drawer-container>
+</div>

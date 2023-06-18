@@ -51,7 +51,10 @@ namespace Rekrut.Implementation
                         result.AccessToken = GenerateToken(user, true);
                         result.RefreshToken = GenerateToken(user, false);
                         result.FeatureCodes = _mapper.Map<List<FeatureDTO>>(accessFeatures);
-                        result.Name = user.Applicant != null ? user.Applicant?.FullName : user.Recruiter?.FullName;
+                        result.UserDetails.UserId = user.Id;
+                        result.UserDetails.UserName = user.UserName;
+                        result.UserDetails.UserEmail = user.Email;
+                        result.UserDetails.FullName = user.Applicant != null ? user.Applicant?.FullName : user.Recruiter?.FullName;
                         result.Profile = _mapper.Map<ProfileDTO>(user.Profile);
                     }
                 }
